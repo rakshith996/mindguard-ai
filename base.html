@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MindGuard AI{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-icon">✳</span><span><b>MindGuard AI</b><small>STUDENT WELLNESS</small></span></a>
+    {% if g.user %}
+      <div class="nav-caption">WORKSPACE</div>
+      <nav>
+        {% if g.user.role == 'student' %}
+          {% if g.user.consent_at %}
+            <a href="{{ url_for('student_dashboard') }}">▦ &nbsp; Overview</a>
+            <a href="{{ url_for('student_dashboard') }}#checkin">♡ &nbsp; Daily check-in</a>
+            <a href="{{ url_for('appointments') }}">▣ &nbsp; Appointments</a>
+            <a href="{{ url_for('urgent_support') }}">＋ &nbsp; Get support</a>
+          {% endif %}
+          <a href="{{ url_for('student_privacy') }}">⚙ &nbsp; Privacy settings</a>
+        {% elif g.user.role == 'counsellor' %}
+          <a href="{{ url_for('counsellor_dashboard') }}">▦ &nbsp; Counsellor dashboard</a>
+        {% endif %}
+      </nav>
+      <div class="side-note"><b>Privacy first</b>Student check-ins are private. Counsellor trend views show cohort summaries only.</div>
+      <form method="post" action="{{ url_for('logout') }}" class="logout-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="nav-logout">↪ &nbsp; Sign out</button></form>
+    {% else %}
+      <div class="side-note"><b>A supportive space</b>Notice patterns, explore small steps and connect with human support when you choose.</div>
+    {% endif %}
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><div class="eyebrow">STUDENT WELLNESS SPACE</div><h1>{% block heading %}MindGuard AI{% endblock %}</h1></div>{% if g.user %}<div class="user-pill"><span class="avatar">{{ g.user.display_name[:1]|upper }}</span><span>{{ g.user.display_name }}<small>{{ g.user.role|title }}</small></span></div>{% endif %}</header>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flashes">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+    {% block content %}{% endblock %}
+    <footer>MindGuard AI is an educational support prototype, not a diagnostic or emergency-monitoring service. · © {{ current_year }}</footer>
+  </main>
+</div>
+{% block scripts %}{% endblock %}
+</body></html>

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Privacy settings · MindGuard AI{% endblock %}
+{% block heading %}Your privacy controls{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <div class="section-kicker">STUDENT-CONTROLLED SETTINGS</div>
+  <h2>Your data and your choices</h2>
+  <p class="muted">You can stop participating at any time. These actions require your current password so another person using an open session cannot make the change casually.</p>
+  <div class="notice"><b>What the prototype stores:</b> your account details, consent timestamp/version, check-in ratings (mood, stress, sleep and academic pressure), and appointment requests you intentionally submit. It does not store the immediate-danger answer.</div>
+</section>
+<section class="card narrow">
+  <h2>Withdraw consent and erase wellness records</h2>
+  <p>This removes your check-ins and appointment requests from the live MindGuard database and clears your consent record. Your login account remains, and you will be asked for consent again before using student features. Any counsellor may already have seen an appointment request you sent; this action cannot erase anything copied outside this prototype database or retained in backups.</p>
+  <form method="post" action="{{ url_for('withdraw_student_consent') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="field"><label for="withdraw-password">Current password</label><input id="withdraw-password" type="password" name="password" autocomplete="current-password" required></div>
+    <div class="field"><label for="withdraw-confirm">Type WITHDRAW to confirm</label><input id="withdraw-confirm" name="confirmation" required maxlength="20" autocomplete="off"></div>
+    <button class="btn secondary" type="submit">Withdraw consent and erase my records</button>
+  </form>
+</section>
+<section class="card narrow danger-panel">
+  <h2>Delete my account permanently</h2>
+  <p>This permanently deletes your student account and linked check-ins and appointment requests from the live database. You will not be able to sign in again with this account. Create a new account only if you later choose to use the prototype again. Database backups and any information already viewed or copied by a recipient are outside this demo's automatic deletion process.</p>
+  <form method="post" action="{{ url_for('delete_student_account') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="field"><label for="delete-password">Current password</label><input id="delete-password" type="password" name="password" autocomplete="current-password" required></div>
+    <div class="field"><label for="delete-confirm">Type DELETE to confirm</label><input id="delete-confirm" name="confirmation" required maxlength="20" autocomplete="off"></div>
+    <button class="btn danger" type="submit">Permanently delete my account</button>
+  </form>
+</section>
+{% endblock %}
